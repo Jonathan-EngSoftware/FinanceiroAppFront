@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { TransacaoListComponent } from './transacao/transacao-list/transacao-list.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  standalone: true,
+  imports: [TransacaoListComponent],
+  template: ` <app-transacao-list></app-transacao-list> `,
 })
 export class AppComponent {
   title = 'FinanceiroApp';
