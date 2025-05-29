@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://sua-api-em-producao/api' // Substitua pela URL de produção
+  apiUrl: 'https://localhost:7043/api', // ← Alterei para a porta 7043
 };

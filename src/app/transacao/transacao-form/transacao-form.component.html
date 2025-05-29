@@ -1,1 +1,22 @@
 <p>transacao-form works!</p>
+<form (ngSubmit)="onSubmit()">
+      <input
+        [(ngModel)]="transacao.descricao"
+        name="descricao"
+        placeholder="Descrição"
+        required
+      />
+      <input
+        [(ngModel)]="transacao.valor"
+        name="valor"
+        type="number"
+        placeholder="Valor"
+        required
+      />
+      <select [(ngModel)]="transacao.tipo" name="tipo" required>
+        <option value="Receita">Receita</option>
+        <option value="Despesa">Despesa</option>
+      </select>
+      <button type="submit">Adicionar</button>
+    </form>
+  `,

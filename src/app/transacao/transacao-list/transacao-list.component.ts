@@ -1,39 +1,83 @@
 import { Component, OnInit } from '@angular/core';
-import { TransacaoServico, FinanceiroServicoDTO } from '../transacao.service';
-import { TransacaoFormComponent } from '../transacao-form/transacao-form.component';
-
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TransacaoService } from '../transacao.service';
+
 @Component({
   selector: 'app-transacao-list',
   standalone: true,
+  imports: [CommonModule],
   template: `
-    <h2>Lista de Transações - FinanceiroApp</h2>
-    <ul>
-      <li *ngFor="let transacao of transacoes">
-        {{ transacao.descricao }} - {{ transacao.valor | currency : 'BRL' }} ({{
-          transacao.tipo
-        }}) - {{ transacao.data }}
-      </li>
-    </ul>
-    <app-transacao-form
-      (transacaoAdicionada)="atualizarLista()"
-    ></app-transacao-form>
+    <h2>Lista de Transações</h2>
+    <div *ngIf="loading">Carregando...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <table *ngIf="transacoes.length > 0">
+      <thead>
+        <tr>
+          <th>Descrição</th>
+          <th>Valor</th>
+          <th>Tipo</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let transacao of transacoes">
+          <td>{{ transacao.descricao }}</td>
+          <td>{{ transacao.valor | currency : 'BRL' }}</td>
+          <td>{{ transacao.tipo }}</td>
+          <td>{{ transacao.data | date : 'dd/MM/yyyy' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="transacoes.length === 0 && !loading">
+      Nenhuma transação cadastrada
+    </div>
   `,
-  imports: [CommonModule, TransacaoFormComponent], // Adicionado CommonModule
+  styles: [
+    `
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      .error {
+        color: red;
+      }
+    `,
+  ],
 })
 export class TransacaoListComponent implements OnInit {
-  transacoes: FinanceiroServicoDTO[] = [];
+  transacoes: any[] = [];
+  loading = false;
+  error: string | null = null;
 
-  constructor(private transacaoServico: TransacaoServico) {}
+  constructor(private transacaoService: TransacaoService) {}
 
   ngOnInit(): void {
-    this.atualizarLista();
+    this.carregarTransacoes();
   }
 
-  atualizarLista(): void {
-    this.transacaoServico.getTransacoes().subscribe((data) => {
-      this.transacoes = data;
+  carregarTransacoes(): void {
+    this.loading = true;
+    this.error = null;
+
+    this.transacaoService.getTransacoes().subscribe({
+      next: (data) => {
+        this.transacoes = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Erro ao carregar transações';
+        console.error('Erro detalhado:', err);
+        this.loading = false;
+      },
     });
   }
 }
