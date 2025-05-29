@@ -32,4 +32,5 @@ export class TransacaoServico {
   criarTransacao(transacao: Transacao): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/transacoes`, transacao);
   }
+  
 }
